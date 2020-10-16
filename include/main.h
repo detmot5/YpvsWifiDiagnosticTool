@@ -1,0 +1,15 @@
+//
+// Created by norbe on 15/10/2020.
+//
+
+#ifndef WIFIDEBUGGER_MAIN_H
+#define WIFIDEBUGGER_MAIN_H
+
+#define DEVICE_OK_LED_PIN D0
+#define SERIAL_RECEIVED_LED_PIN D1
+#define HTTP_REQUEST_LED_PIN D2
+#define ERROR_LED_PIN D3
+
+
+
+#endif //WIFIDEBUGGER_MAIN_H
