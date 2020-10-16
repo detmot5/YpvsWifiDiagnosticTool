@@ -5,8 +5,15 @@
 #ifndef WIFIDEBUGGER_DEVICECOMMANDS_H
 #define WIFIDEBUGGER_DEVICECOMMANDS_H
 
+#include <Arduino.h>
+#include <MillisTimer.h>
+#include "DeviceCommand.h"
+
+
 namespace DeviceCommandsService{
-    void add();
+    void init(Stream* deviceStream);
+    void send(DeviceCommand& command);
+    void process(MillisTimer& tim);
 }
 
 

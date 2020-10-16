@@ -7,6 +7,8 @@
 #include "httpController.h"
 #include "rpmParser.h"
 #include "main.h"
+#include "DeviceCommandsService.h"
+
 
 
 #define CORS_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN  "Access-Control-Allow-Origin"
@@ -15,6 +17,14 @@
 
 #define CORS_HEADER_ACCESS_CONTROL_ALLOW_HEADERS "Access-Control-Allow-Headers"
 #define CORS_ALLOWED_HEADERS "Origin, X-Requested-With, Content-Type, Accept"
+
+
+
+#define HTTP_STATUS_OK 200
+#define HTTP_STATUS_BAD_REQUEST 400
+
+
+
 
 
 
@@ -32,19 +42,35 @@ void HTTPSetMappings(AsyncWebServer& server) {
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     digitalWrite(HTTP_REQUEST_LED_PIN, HIGH);
-    const char* json = {R"( {"name" : "YPVS WiFi Debugger",
+    const char* json = {R"( {"name" : "YPVS WiFi Diagnostic Tool",
                              "version" : "1.0.0"
                         })"};
-    AsyncWebServerResponse* response = request->beginResponse(200, "application/json", json);
+    AsyncWebServerResponse* response = request->beginResponse(HTTP_STATUS_OK, "application/json", json);
     fullCorsAllow(response);
     request->send(response);
   });
 
   server.on("/GET_RPM", HTTP_GET, [] (AsyncWebServerRequest* request){
     digitalWrite(HTTP_REQUEST_LED_PIN, HIGH);
-    AsyncWebServerResponse* response = request->beginResponse(200, "application/json", getRPMInJSON());
+    AsyncWebServerResponse* response = request->beginResponse(HTTP_STATUS_OK, "application/json", getRPMInJSON());
     fullCorsAllow(response);
     request->send(response);
+  });
+
+  server.on("/SET_RPM", HTTP_POST, [] (AsyncWebServerRequest* request){
+    digitalWrite(HTTP_REQUEST_LED_PIN, HIGH);
+    AsyncWebParameter* param = request->getParam(0);
+    if(param->name().equals("rpm")){
+      DeviceCommand command("AT+RPM", CommandMode::AT_PARAM, param->value().toInt());
+      DeviceCommandsService::send(command);
+      request->send(HTTP_STATUS_OK);
+    } else {
+      request->send(HTTP_STATUS_BAD_REQUEST);
+    }
+  });
+  server.on("/test", HTTP_POST, [] (AsyncWebServerRequest* request){
+    digitalWrite(HTTP_REQUEST_LED_PIN, HIGH);
+    
   });
 
 

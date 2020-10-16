@@ -6,7 +6,6 @@
 #include <RingBuffer.h>
 #include <MillisTimer.h>
 #include "DeviceCommandsService.h"
-#include "DeviceCommand.h"
 
 #define COMMANDS_BUFFER_SIZE 100
 
@@ -35,7 +34,7 @@ namespace DeviceCommandsService{
     commands.pushBack(command);
   }
 
-  void process(){
+  void process(MillisTimer& tim){
     DeviceCommand commandToSend;
     bool isCommandToSend = commands.getFront(&commandToSend);
     if(isCommandToSend && stream != nullptr){
